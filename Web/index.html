@@ -1,1 +1,90 @@
-### Testing
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adenine | Zero-Knowledge Productivity Suite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#0B0D13',
+            surface: '#161922',
+            surfaceAlt: '#222634',
+            violetAccent: '#7C3AED',
+            violetHover: '#6366F1',
+            emeraldState: '#10B981',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-void text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-violetAccent selection:text-white">
+
+  <!-- Header / Navigation -->
+  <header class="border-b border-surfaceAlt/60 bg-void/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <!-- Abstracted Purine Dual-Ring SVG Logo -->
+        <svg class="w-8 h-8 text-violetAccent" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Pyrimidine 6-Ring -->
+          <polygon points="35,15 65,15 80,45 65,75 35,75 20,45" />
+          <!-- Imidazole 5-Ring Fusion -->
+          <polyline points="65,15 90,30 90,60 65,75" />
+          <!-- Cryptographic Vault Core Lock -->
+          <circle cx="50" cy="45" r="8" class="fill-violetAccent" />
+        </svg>
+        <span class="font-bold text-xl tracking-tight text-white">Adenine</span>
+      </div>
+      <div class="flex items-center space-x-4 text-xs font-mono">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emeraldState/10 text-emeraldState border border-emeraldState/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emeraldState animate-pulse"></span>
+          Zero-Knowledge Active
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="max-w-4xl mx-auto px-6 py-20 text-center flex-1 flex flex-col items-center justify-center">
+    <div class="inline-block px-3 py-1 mb-6 text-xs font-mono tracking-wide uppercase rounded border border-violetAccent/30 bg-violetAccent/10 text-violetHover">
+      Unified Client-Side Encryption
+    </div>
+    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+      If you don't hold the key, <br class="hidden sm:inline">you don't own the data.
+    </h1>
+    <p class="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+      A single-owner, zero-knowledge productivity suite unifying password management, secure notes, calendars, and checklists with unbreakable client-side encryption.
+    </p>
+
+    <!-- Feature Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-3xl text-left mt-8">
+      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
+        <h2 class="text-base font-bold text-white mb-1">🔑 Credential Vault</h2>
+        <p class="text-sm text-slate-400">Argon2id + AES-256-GCM zero-knowledge password management.</p>
+      </div>
+      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
+        <h2 class="text-base font-bold text-white mb-1">📝 Encrypted Notes</h2>
+        <p class="text-sm text-slate-400">Fast, local-first markdown documents with client-side indexing.</p>
+      </div>
+      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
+        <h2 class="text-base font-bold text-white mb-1">📅 Private Calendar</h2>
+        <p class="text-sm text-slate-400">Zero-leak scheduling and encrypted timeline coordination.</p>
+      </div>
+      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
+        <h2 class="text-base font-bold text-white mb-1">✅ Secure Checklists</h2>
+        <p class="text-sm text-slate-400">State synchronization with conflict-free encrypted primitives.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-surfaceAlt/40 py-8 text-center text-xs text-slate-500 font-mono">
+    <p>&copy; 2026 Adenine. All rights reserved. Zero-knowledge by design.</p>
+  </footer>
+
+</body>
+</html>
