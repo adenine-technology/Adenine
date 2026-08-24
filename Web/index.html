@@ -3,12 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Adenine | Zero-Knowledge Productivity Suite</title>
+  <meta name="description" content="A single-owner, zero-knowledge productivity suite unifying credential vaults, encrypted notes, calendars, and checklists with unbreakable client-side cryptography.">
+  <meta name="theme-color" content="#0B0D13">
+
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png">
+
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
           colors: {
             void: '#0B0D13',
             surface: '#161922',
@@ -16,32 +34,57 @@
             violetAccent: '#7C3AED',
             violetHover: '#6366F1',
             emeraldState: '#10B981',
+            amberState: '#F59E0B',
+            crimsonState: '#EF4444',
           }
         }
       }
     }
   </script>
+
+  <style>
+    /* Custom subtle glow & grid backdrop */
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .radial-glow {
+      background: radial-gradient(circle at 50% 10%, rgba(124, 58, 237, 0.15) 0%, rgba(11, 13, 19, 0) 70%);
+    }
+  </style>
 </head>
-<body class="bg-void text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-violetAccent selection:text-white">
+<body class="bg-void text-slate-100 min-h-screen font-sans antialiased selection:bg-violetAccent selection:text-white relative bg-grid">
+
+  <!-- Background Lighting Gradient -->
+  <div class="absolute inset-0 radial-glow pointer-events-none -z-10"></div>
 
   <!-- Header / Navigation -->
-  <header class="border-b border-surfaceAlt/60 bg-void/80 backdrop-blur sticky top-0 z-50">
+  <header class="border-b border-surfaceAlt/60 bg-void/85 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <!-- Abstracted Purine Dual-Ring SVG Logo -->
-        <svg class="w-8 h-8 text-violetAccent" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-          <!-- Pyrimidine 6-Ring -->
+      
+      <!-- Brand & Icon -->
+      <a href="#" class="flex items-center space-x-3 group">
+        <img 
+          src="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png" 
+          alt="Adenine Icon" 
+          class="w-8 h-8 rounded-lg border border-violetAccent/30 group-hover:border-violetAccent transition-colors duration-200"
+          onerror="this.style.display='none'; document.getElementById('fallback-logo').classList.remove('hidden');"
+        >
+        <!-- SVG Fallback if image fails to load -->
+        <svg id="fallback-logo" class="w-8 h-8 text-violetAccent hidden" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6">
           <polygon points="35,15 65,15 80,45 65,75 35,75 20,45" />
-          <!-- Imidazole 5-Ring Fusion -->
           <polyline points="65,15 90,30 90,60 65,75" />
-          <!-- Cryptographic Vault Core Lock -->
           <circle cx="50" cy="45" r="8" class="fill-violetAccent" />
         </svg>
-        <span class="font-bold text-xl tracking-tight text-white">Adenine</span>
-      </div>
-      <div class="flex items-center space-x-4 text-xs font-mono">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emeraldState/10 text-emeraldState border border-emeraldState/20">
-          <span class="w-1.5 h-1.5 rounded-full bg-emeraldState animate-pulse"></span>
+        <span class="font-bold text-xl tracking-tight text-white font-mono">Adenine</span>
+      </a>
+
+      <!-- Security Status Badge -->
+      <div class="flex items-center space-x-4">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emeraldState/10 text-emeraldState border border-emeraldState/25 text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-emeraldState animate-pulse"></span>
           Zero-Knowledge Active
         </span>
       </div>
@@ -49,41 +92,138 @@
   </header>
 
   <!-- Hero Section -->
-  <main class="max-w-4xl mx-auto px-6 py-20 text-center flex-1 flex flex-col items-center justify-center">
-    <div class="inline-block px-3 py-1 mb-6 text-xs font-mono tracking-wide uppercase rounded border border-violetAccent/30 bg-violetAccent/10 text-violetHover">
-      Unified Client-Side Encryption
+  <main class="max-w-5xl mx-auto px-6 pt-24 pb-20 text-center flex flex-col items-center justify-center">
+    
+    <!-- Protocol Badge -->
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-md border border-violetAccent/30 bg-violetAccent/10 text-violetHover text-xs font-mono font-medium tracking-wide">
+      <span class="w-1.5 h-1.5 rounded-full bg-violetAccent"></span>
+      UNIFIED CLIENT-SIDE ENCRYPTION PROTOCOL
     </div>
-    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
-      If you don't hold the key, <br class="hidden sm:inline">you don't own the data.
+
+    <!-- Main Headline / Motto -->
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1] mb-8">
+      If you don't hold the key,<br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-violetAccent to-violetHover">
+        you don't own the data.
+      </span>
     </h1>
-    <p class="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-      A single-owner, zero-knowledge productivity suite unifying password management, secure notes, calendars, and checklists with unbreakable client-side encryption.
+
+    <!-- Subtitle / Tagline -->
+    <p class="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+      Adenine unites your passwords, private notes, schedules, and checklists into a single, hardened operating environment. Encrypted at the source with zero remote knowledge.
     </p>
 
-    <!-- Feature Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-3xl text-left mt-8">
-      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
-        <h2 class="text-base font-bold text-white mb-1">🔑 Credential Vault</h2>
-        <p class="text-sm text-slate-400">Argon2id + AES-256-GCM zero-knowledge password management.</p>
-      </div>
-      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
-        <h2 class="text-base font-bold text-white mb-1">📝 Encrypted Notes</h2>
-        <p class="text-sm text-slate-400">Fast, local-first markdown documents with client-side indexing.</p>
-      </div>
-      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
-        <h2 class="text-base font-bold text-white mb-1">📅 Private Calendar</h2>
-        <p class="text-sm text-slate-400">Zero-leak scheduling and encrypted timeline coordination.</p>
-      </div>
-      <div class="p-5 rounded-lg bg-surface border border-surfaceAlt/60">
-        <h2 class="text-base font-bold text-white mb-1">✅ Secure Checklists</h2>
-        <p class="text-sm text-slate-400">State synchronization with conflict-free encrypted primitives.</p>
-      </div>
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
+      <a href="#suite" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-violetAccent hover:bg-violetHover text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-violetAccent/20 flex items-center justify-center gap-2">
+        <span>Explore Architecture</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </a>
+      <a href="https://github.com/adenine-technology/Adenine" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-surface hover:bg-surfaceAlt text-slate-300 hover:text-white font-mono text-sm border border-surfaceAlt/80 transition-all duration-200">
+        GitHub Source
+      </a>
     </div>
+
+    <!-- Four Pillars Grid -->
+    <section id="suite" class="w-full text-left pt-6">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8 flex justify-between items-end">
+        <div>
+          <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">The Suite</h2>
+          <p class="text-xl font-bold text-white mt-1">Four Modules. One Cryptographic Root.</p>
+        </div>
+        <span class="text-xs font-mono text-slate-500 hidden sm:inline">AES-256-GCM / Argon2id</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Module 1: Passwords -->
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition-colors duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-violetAccent/10 border border-violetAccent/20 flex items-center justify-center text-violetHover mb-4 font-mono font-bold">
+              01
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              Credential Vault
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Zero-knowledge password & passkey storage. Master passwords are piped strictly through local Argon2id key derivation before payload encryption.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surfaceAlt/40 text-xs font-mono text-slate-500">
+            Hardware-backed Biometrics · Auto-fill Bridge
+          </div>
+        </div>
+
+        <!-- Module 2: Notes -->
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition-colors duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-violetAccent/10 border border-violetAccent/20 flex items-center justify-center text-violetHover mb-4 font-mono font-bold">
+              02
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              Encrypted Notes
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Fast, distraction-free markdown documentation. Full-text search occurs purely in-memory via client-side indexing without unencrypted server exposure.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surfaceAlt/40 text-xs font-mono text-slate-500">
+            Offline IndexedDB · Client-side Parsing
+          </div>
+        </div>
+
+        <!-- Module 3: Calendar -->
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition-colors duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-violetAccent/10 border border-violetAccent/20 flex items-center justify-center text-violetHover mb-4 font-mono font-bold">
+              03
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              Private Scheduling
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Timelines and appointments protected under envelope encryption. Time stamps and event details remain mathematically opaque to intermediate relays.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surfaceAlt/40 text-xs font-mono text-slate-500">
+            Blind Timestamps · Zero Metadata Leakage
+          </div>
+        </div>
+
+        <!-- Module 4: Checklists -->
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition-colors duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-violetAccent/10 border border-violetAccent/20 flex items-center justify-center text-violetHover mb-4 font-mono font-bold">
+              04
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              State Checklists
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Accountless, peer-to-peer task tracking with encrypted conflict-free replicated data types (CRDTs) for seamless real-time state synchronization.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surfaceAlt/40 text-xs font-mono text-slate-500">
+            Encrypted CRDTs · Ephemeral P2P Tunneling
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-surfaceAlt/40 py-8 text-center text-xs text-slate-500 font-mono">
-    <p>&copy; 2026 Adenine. All rights reserved. Zero-knowledge by design.</p>
+  <footer class="border-t border-surfaceAlt/60 bg-surface/40 py-10">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emeraldState"></span>
+        <p>&copy; 2026 Adenine. All rights reserved.</p>
+      </div>
+      <p class="text-center sm:text-right">
+        Encrypted at the source. Solitary by design.
+      </p>
+    </div>
   </footer>
 
 </body>
