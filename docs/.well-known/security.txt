@@ -1,0 +1,7 @@
+# Adenine Security Disclosure Policy (RFC 9116)
+Contact: https://github.com/adenine-technology/Adenine/security/advisories/new
+Expires: 2027-08-26T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://adenine-technology.github.io/Adenine/.well-known/security.txt
+Policy: https://adenine-technology.github.io/Adenine/#security
+Acknowledgments: https://github.com/adenine-technology/Adenine/blob/main/README.md
