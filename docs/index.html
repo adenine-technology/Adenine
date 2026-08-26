@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Adenine | Zero-Knowledge Productivity Suite</title>
+  <meta name="description" content="A single-owner, zero-knowledge productivity suite unifying credential vaults, encrypted notes, calendars, and checklists with unbreakable client-side cryptography.">
+  <meta name="theme-color" content="#0B0D13">
+
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#0B0D13',
+            surface: '#161922',
+            surfaceAlt: '#222634',
+            violetAccent: '#7C3AED',
+            violetHover: '#6366F1',
+            emeraldState: '#10B981',
+            amberState: '#F59E0B',
+            crimsonState: '#EF4444',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .radial-glow {
+      background: radial-gradient(circle at 50% 10%, rgba(124, 58, 237, 0.15) 0%, rgba(11, 13, 19, 0) 70%);
+    }
+  </style>
+</head>
+<body class="bg-void text-slate-100 min-h-screen font-sans antialiased selection:bg-violetAccent selection:text-white relative bg-grid">
+
+  <div class="absolute inset-0 radial-glow pointer-events-none -z-10"></div>
+
+  <!-- Navigation -->
+  <header class="border-b border-surfaceAlt/60 bg-void/85 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center space-x-3">
+        <img 
+          src="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png" 
+          alt="Adenine Icon" 
+          class="w-8 h-8 rounded-lg border border-violetAccent/30"
+          onerror="this.style.display='none'; document.getElementById('fallback-logo').classList.remove('hidden');"
+        >
+        <svg id="fallback-logo" class="w-8 h-8 text-violetAccent hidden" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6">
+          <polygon points="35,15 65,15 80,45 65,75 35,75 20,45" />
+          <polyline points="65,15 90,30 90,60 65,75" />
+          <circle cx="50" cy="45" r="8" class="fill-violetAccent" />
+        </svg>
+        <span class="font-bold text-xl tracking-tight text-white font-mono">Adenine</span>
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-6 text-xs font-mono text-slate-400">
+        <a href="#suite" class="hover:text-white transition-colors">Suite</a>
+        <a href="#threat-model" class="hover:text-white transition-colors">Threat Model</a>
+        <a href="#matrix" class="hover:text-white transition-colors">Comparison</a>
+        <a href="#canary" class="hover:text-white transition-colors">Canary</a>
+        <a href="#security" class="hover:text-white transition-colors">Disclosure</a>
+      </nav>
+
+      <div class="flex items-center">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emeraldState/10 text-emeraldState border border-emeraldState/25 text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-emeraldState animate-pulse"></span>
+          Zero-Knowledge Active
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center flex flex-col items-center justify-center">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-md border border-violetAccent/30 bg-violetAccent/10 text-violetHover text-xs font-mono font-medium">
+      <span class="w-1.5 h-1.5 rounded-full bg-violetAccent"></span>
+      UNIFIED CLIENT-SIDE ENCRYPTION PROTOCOL
+    </div>
+
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1] mb-8">
+      If you don't hold the key,<br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-violetAccent to-violetHover">
+        you don't own the data.
+      </span>
+    </h1>
+
+    <p class="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+      Adenine unites password management, private notes, schedules, and checklists into a single zero-knowledge operating environment. Encrypted client-side at the source.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
+      <a href="#threat-model" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-violetAccent hover:bg-violetHover text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-violetAccent/20">
+        Review Cryptographic Spec
+      </a>
+      <a href="https://github.com/adenine-technology/Adenine" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-surface hover:bg-surfaceAlt text-slate-300 hover:text-white font-mono text-sm border border-surfaceAlt/80 transition-all duration-200">
+        Inspect Source Code
+      </a>
+    </div>
+
+    <!-- The 4 Modules -->
+    <section id="suite" class="w-full text-left pt-6 mb-24">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8 flex justify-between items-end">
+        <div>
+          <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">The Platform</h2>
+          <p class="text-2xl font-bold text-white mt-1">Four Modules. One Cryptographic Root.</p>
+        </div>
+        <span class="text-xs font-mono text-slate-500 hidden sm:inline">AES-256-GCM / Argon2id</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60">
+          <div class="text-xs font-mono text-violetHover font-bold mb-2">01 / VAULT</div>
+          <h3 class="text-lg font-bold text-white mb-2">Credential Manager</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Master passwords pass through client Argon2id key derivation. Remote servers store only blind encrypted blobs.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60">
+          <div class="text-xs font-mono text-violetHover font-bold mb-2">02 / NOTES</div>
+          <h3 class="text-lg font-bold text-white mb-2">Encrypted Notes</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Local-first markdown notes. Full-text search runs strictly in-memory through local client indexing.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60">
+          <div class="text-xs font-mono text-violetHover font-bold mb-2">03 / CALENDAR</div>
+          <h3 class="text-lg font-bold text-white mb-2">Zero-Leak Scheduling</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Event timestamps and metadata are envelope-encrypted before storage to prevent temporal profiling.</p>
+        </div>
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60">
+          <div class="text-xs font-mono text-violetHover font-bold mb-2">04 / TASKS</div>
+          <h3 class="text-lg font-bold text-white mb-2">State Checklists</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Peer-to-peer task tracking with encrypted conflict-free replicated data types (CRDTs) over WebRTC.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Threat Model & Cryptographic Specs -->
+    <section id="threat-model" class="w-full text-left pt-6 mb-24">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">Security Architecture</h2>
+        <p class="text-2xl font-bold text-white mt-1">Threat Model & Cryptographic Primitives</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border border-surfaceAlt/60 rounded-xl overflow-hidden font-mono">
+          <thead class="bg-surfaceAlt/50 text-slate-300 text-xs uppercase">
+            <tr>
+              <th class="p-4 border-b border-surfaceAlt/60">Threat Vector</th>
+              <th class="p-4 border-b border-surfaceAlt/60">Defense Layer</th>
+              <th class="p-4 border-b border-surfaceAlt/60">Cryptographic Standard</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surfaceAlt/40 bg-surface text-slate-400">
+            <tr>
+              <td class="p-4 text-white font-medium">Server Subpoena / DB Breach</td>
+              <td class="p-4">Zero-Knowledge Envelope Encryption</td>
+              <td class="p-4 text-violetHover">Server holds only opaque ciphertext blobs</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Offline GPU / ASIC Brute Force</td>
+              <td class="p-4">Memory-Hard Key Derivation</td>
+              <td class="p-4 text-violetHover">Argon2id (m=64MB, t=3, p=4)</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Data Tampering / MITM</td>
+              <td class="p-4">Authenticated Symmetric Ciphers</td>
+              <td class="p-4 text-violetHover">AES-256-GCM (128-bit Auth Tag, 96-bit IV)</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Account Hijacking / Phishing</td>
+              <td class="p-4">Accountless Device Pairing</td>
+              <td class="p-4 text-violetHover">WebRTC DataChannel + Ephemeral Curve25519</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Competitor Comparison Matrix -->
+    <section id="matrix" class="w-full text-left pt-6 mb-24">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">Competitive Analysis</h2>
+        <p class="text-2xl font-bold text-white mt-1">Why Unified Zero-Knowledge Matters</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border border-surfaceAlt/60 rounded-xl overflow-hidden font-mono">
+          <thead class="bg-surfaceAlt/50 text-slate-300 text-xs uppercase">
+            <tr>
+              <th class="p-4 border-b border-surfaceAlt/60">Capability</th>
+              <th class="p-4 border-b border-surfaceAlt/60 text-emeraldState">Adenine</th>
+              <th class="p-4 border-b border-surfaceAlt/60">Bitwarden</th>
+              <th class="p-4 border-b border-surfaceAlt/60">Notion</th>
+              <th class="p-4 border-b border-surfaceAlt/60">Obsidian Sync</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surfaceAlt/40 bg-surface text-slate-400">
+            <tr>
+              <td class="p-4 text-white font-medium">Unified Suite (Vault/Notes/Cal/Tasks)</td>
+              <td class="p-4 text-emeraldState font-bold">✓ Yes (4-in-1)</td>
+              <td class="p-4 text-crimsonState">✗ Passwords only</td>
+              <td class="p-4 text-amberState">~ Workspace only</td>
+              <td class="p-4 text-crimsonState">✗ Notes only</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Zero-Knowledge by Default</td>
+              <td class="p-4 text-emeraldState font-bold">✓ Native</td>
+              <td class="p-4 text-emeraldState">✓ Native</td>
+              <td class="p-4 text-crimsonState">✗ Cloud Plaintext</td>
+              <td class="p-4 text-emeraldState">✓ Native</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Accountless P2P Device Sync</td>
+              <td class="p-4 text-emeraldState font-bold">✓ Yes (WebRTC)</td>
+              <td class="p-4 text-crimsonState">✗ Account Required</td>
+              <td class="p-4 text-crimsonState">✗ Account Required</td>
+              <td class="p-4 text-crimsonState">✗ Account Required</td>
+            </tr>
+            <tr>
+              <td class="p-4 text-white font-medium">Offline-First Local Storage</td>
+              <td class="p-4 text-emeraldState font-bold">✓ IndexedDB / OPFS</td>
+              <td class="p-4 text-amberState">~ Partial Cache</td>
+              <td class="p-4 text-crimsonState">✗ No Offline Edit</td>
+              <td class="p-4 text-emeraldState">✓ Local Markdown</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Warrant Canary & Transparency -->
+    <section id="canary" class="w-full text-left pt-6 mb-24">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">Legal Independence</h2>
+        <p class="text-2xl font-bold text-white mt-1">Warrant Canary & Legal Transparency</p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 font-mono text-sm">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-surfaceAlt/40">
+          <span class="text-xs text-emeraldState font-bold uppercase tracking-wider">● Canary Statement Active</span>
+          <span class="text-xs text-slate-500">Period: Q3 2026 (Aug 2026)</span>
+        </div>
+        <p class="text-slate-300 leading-relaxed mb-4">
+          As of <strong>August 26, 2026</strong>, Adenine has received:
+        </p>
+        <ul class="list-disc list-inside text-slate-400 space-y-1 mb-6">
+          <li>Zero National Security Letters (NSLs)</li>
+          <li>Zero Foreign Intelligence Surveillance Act (FISA) court orders</li>
+          <li>Zero secret gag orders or government data demands</li>
+        </ul>
+        <div class="p-4 rounded-lg bg-void border border-surfaceAlt/40 text-xs text-slate-400 leading-relaxed">
+          <strong class="text-white">Architectural Fact:</strong> Even if presented with a lawful subpoena or government order, Adenine holds zero master keys and possesses zero cryptographic ability to decrypt user passwords, notes, calendar records, or checklists.
+        </div>
+      </div>
+    </section>
+
+    <!-- Responsible Disclosure & Security Policy -->
+    <section id="security" class="w-full text-left pt-6 mb-24">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">Vulnerability Research</h2>
+        <p class="text-2xl font-bold text-white mt-1">Responsible Security Disclosure</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-xs">
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60">
+          <h3 class="text-sm font-bold text-white mb-3">Safe Harbor Policy</h3>
+          <p class="text-slate-400 leading-relaxed mb-4">
+            We pledge not to pursue legal action against security researchers who identify vulnerabilities, provided you:
+          </p>
+          <ul class="list-disc list-inside text-slate-400 space-y-1">
+            <li>Submit details privately before public disclosure.</li>
+            <li>Make no attempt to access user data without authorization.</li>
+            <li>Do not degrade production system performance (no DoS).</li>
+          </ul>
+        </div>
+
+        <div class="p-6 rounded-xl bg-surface border border-surfaceAlt/60 flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-white mb-3">Private Disclosure Channel</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">
+              Vulnerabilities are received and triaged directly via GitHub's encrypted advisory pipeline. No public issue trackers or unencrypted emails required.
+            </p>
+          </div>
+          <a href="https://github.com/adenine-technology/Adenine/security/advisories/new" target="_blank" rel="noopener noreferrer" class="w-full py-3 rounded-lg bg-violetAccent hover:bg-violetHover text-white text-center font-bold transition">
+            Open Private Security Report ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Media Kit & Press Assets -->
+    <section id="media" class="w-full text-left pt-6 mb-12">
+      <div class="border-b border-surfaceAlt/40 pb-4 mb-8">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-violetHover">Brand Assets</h2>
+        <p class="text-2xl font-bold text-white mt-1">Media Kit & Identity Guidelines</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
+        <a href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png" target="_blank" class="p-4 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition flex items-center justify-between">
+          <span class="text-white">App Icon (PNG)</span>
+          <span class="text-violetHover">Download ↗</span>
+        </a>
+        <a href="https://github.com/adenine-technology/Adenine" target="_blank" class="p-4 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition flex items-center justify-between">
+          <span class="text-white">Vector Identity (.SVG)</span>
+          <span class="text-violetHover">GitHub ↗</span>
+        </a>
+        <a href="https://github.com/adenine-technology/Adenine/blob/main/LICENCE" target="_blank" class="p-4 rounded-xl bg-surface border border-surfaceAlt/60 hover:border-violetAccent/40 transition flex items-center justify-between">
+          <span class="text-white">Proprietary License</span>
+          <span class="text-violetHover">View ↗</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-surfaceAlt/60 bg-surface/40 py-10">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emeraldState"></span>
+        <p>&copy; 2026 Adenine. All rights reserved.</p>
+      </div>
+      <p class="text-center sm:text-right">
+        Encrypted at the source. Solitary by design.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
