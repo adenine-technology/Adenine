@@ -1,0 +1,24 @@
+{
+  "name": "Adenine",
+  "short_name": "Adenine",
+  "description": "Zero-Knowledge Cryptographic Workspace",
+  "start_url": "./app.html",
+  "display": "standalone",
+  "background_color": "#0B0D13",
+  "theme_color": "#0B0D13",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
