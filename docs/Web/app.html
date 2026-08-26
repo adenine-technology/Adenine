@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adenine | Zero-Knowledge Workspace</title>
+  <meta name="theme-color" content="#0B0D13">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#0B0D13',
+            surface: '#161922',
+            surfaceAlt: '#222634',
+            violetAccent: '#7C3AED',
+            violetHover: '#6366F1',
+            emeraldState: '#10B981',
+            amberState: '#F59E0B',
+            crimsonState: '#EF4444',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .bg-grid {
+      background-size: 32px 32px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-void text-slate-100 min-h-screen font-sans antialiased selection:bg-violetAccent selection:text-white bg-grid flex flex-col justify-between">
+
+  <div id="unlock-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-void/95 backdrop-blur-md p-4">
+    <div class="w-full max-w-md p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceAlt shadow-2xl">
+      <div class="flex items-center space-x-3 mb-6">
+        <img src="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png" alt="Adenine" class="w-8 h-8 rounded-lg border border-violetAccent/40">
+        <span class="font-mono font-bold text-xl text-white">Adenine Core</span>
+      </div>
+      <p class="text-xs font-mono text-slate-400 mb-6 leading-relaxed">Derive master key via native WebCrypto. Payload stays client-side.</p>
+      <form id="vault-auth-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Master Passphrase</label>
+          <input type="password" id="master-passphrase" required placeholder="Enter passphrase" class="w-full px-4 py-3 rounded-lg bg-void border border-surfaceAlt text-white font-mono text-sm focus:outline-none focus:border-violetAccent transition">
+        </div>
+        <button type="submit" id="unlock-btn" class="w-full py-3.5 rounded-lg bg-violetAccent hover:bg-violetHover text-white font-semibold text-sm transition font-mono flex items-center justify-center gap-2">
+          <span>Unlock Workspace</span>
+        </button>
+      </form>
+      <div id="auth-status" class="mt-4 text-xs font-mono text-center text-slate-500"></div>
+    </div>
+  </div>
+
+  <div id="app-container" class="hidden flex-1 flex flex-col min-h-screen">
+    <header class="border-b border-surfaceAlt bg-void/90 backdrop-blur sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <img src="https://raw.githubusercontent.com/adenine-technology/Adenine/main/icon.png" alt="Adenine" class="w-7 h-7 rounded border border-violetAccent/30">
+          <span class="font-mono font-bold text-lg text-white">Adenine</span>
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emeraldState/10 text-emeraldState border border-emeraldState/20 text-xs font-mono">
+            <span class="w-1.5 h-1.5 rounded-full bg-emeraldState"></span> Vault Decrypted
+          </span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button id="p2p-sync-btn" class="px-3 py-1.5 rounded bg-surface hover:bg-surfaceAlt border border-surfaceAlt text-xs font-mono text-slate-300 hover:text-white transition">
+            P2P Direct Sync
+          </button>
+          <button id="lock-btn" class="px-3 py-1.5 rounded bg-crimsonState/10 hover:bg-crimsonState/20 border border-crimsonState/30 text-xs font-mono text-crimsonState transition">
+            Lock Vault
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 flex flex-col">
+      <div class="flex space-x-2 border-b border-surfaceAlt pb-4 mb-6 overflow-x-auto font-mono text-xs">
+        <button data-tab="vault" class="tab-btn px-4 py-2 rounded-lg bg-surface border border-violetAccent text-white">Credentials</button>
+        <button data-tab="notes" class="tab-btn px-4 py-2 rounded-lg bg-surface border border-surfaceAlt text-slate-400 hover:text-white">Notes</button>
+        <button data-tab="calendar" class="tab-btn px-4 py-2 rounded-lg bg-surface border border-surfaceAlt text-slate-400 hover:text-white">Calendar</button>
+        <button data-tab="tasks" class="tab-btn px-4 py-2 rounded-lg bg-surface border border-surfaceAlt text-slate-400 hover:text-white">Checklists</button>
+      </div>
+
+      <main class="flex-1">
+        <section id="tab-vault" class="tab-content">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Store Credential</h2>
+              <form id="vault-form" class="space-y-3 font-mono text-xs">
+                <input type="text" id="cred-title" placeholder="Title (e.g. GitHub)" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <input type="text" id="cred-username" placeholder="Username / Email" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <div class="flex gap-2">
+                  <input type="password" id="cred-password" placeholder="Password" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                  <button type="button" id="gen-pass-btn" class="px-3 rounded bg-surfaceAlt hover:bg-violetAccent text-white transition text-xs">Gen</button>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded bg-violetAccent hover:bg-violetHover text-white font-bold transition">Encrypt & Save</button>
+              </form>
+            </div>
+            <div class="lg:col-span-2 p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Vault Storage</h2>
+              <div id="vault-list" class="space-y-2 max-h-[500px] overflow-y-auto font-mono text-xs"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-notes" class="tab-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Create Encrypted Note</h2>
+              <form id="notes-form" class="space-y-3 font-mono text-xs">
+                <input type="text" id="note-title" placeholder="Note Title" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <textarea id="note-body" placeholder="Markdown supported..." required rows="8" class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent"></textarea>
+                <button type="submit" class="w-full py-2.5 rounded bg-violetAccent hover:bg-violetHover text-white font-bold transition">Encrypt & Save Note</button>
+              </form>
+            </div>
+            <div class="lg:col-span-2 p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Encrypted Index</h2>
+              <div id="notes-list" class="space-y-3 max-h-[500px] overflow-y-auto font-mono text-xs"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-calendar" class="tab-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Schedule Event</h2>
+              <form id="cal-form" class="space-y-3 font-mono text-xs">
+                <input type="text" id="event-title" placeholder="Event Name" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <input type="date" id="event-date" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <input type="time" id="event-time" required class="w-full px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+                <button type="submit" class="w-full py-2.5 rounded bg-violetAccent hover:bg-violetHover text-white font-bold transition">Encrypt Schedule</button>
+              </form>
+            </div>
+            <div class="lg:col-span-2 p-5 rounded-xl bg-surface border border-surfaceAlt">
+              <h2 class="text-sm font-bold text-white mb-4 font-mono">Private Agendas</h2>
+              <div id="cal-list" class="space-y-2 max-h-[500px] overflow-y-auto font-mono text-xs"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-tasks" class="tab-content hidden">
+          <div class="max-w-2xl mx-auto p-5 rounded-xl bg-surface border border-surfaceAlt">
+            <h2 class="text-sm font-bold text-white mb-4 font-mono">State Checklists</h2>
+            <form id="task-form" class="flex gap-2 mb-4 font-mono text-xs">
+              <input type="text" id="task-text" placeholder="Add a private objective..." required class="flex-1 px-3 py-2.5 rounded bg-void border border-surfaceAlt text-white focus:outline-none focus:border-violetAccent">
+              <button type="submit" class="px-4 py-2.5 rounded bg-violetAccent hover:bg-violetHover text-white font-bold transition">Add</button>
+            </form>
+            <div id="task-list" class="space-y-2 font-mono text-xs"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="sync-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-void/90 backdrop-blur p-4">
+      <div class="w-full max-w-lg p-6 rounded-2xl bg-surface border border-surfaceAlt font-mono text-xs">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-sm text-white">Accountless P2P WebRTC Sync</h3>
+          <button id="close-sync-btn" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+        <p class="text-slate-400 mb-4">Exchange encrypted IndexedDB stores peer-to-peer over WebRTC.</p>
+        <div class="space-y-3">
+          <button id="p2p-offer-btn" class="w-full py-2.5 rounded bg-violetAccent hover:bg-violetHover text-white font-bold">Generate Session Offer (Device A)</button>
+          <textarea id="p2p-sdp-out" readonly rows="4" placeholder="Generated Offer/Answer SDP shows here..." class="w-full px-3 py-2 rounded bg-void border border-surfaceAlt text-slate-300"></textarea>
+          <textarea id="p2p-sdp-in" rows="4" placeholder="Paste Remote Offer/Answer SDP here..." class="w-full px-3 py-2 rounded bg-void border border-surfaceAlt text-white"></textarea>
+          <button id="p2p-connect-btn" class="w-full py-2.5 rounded bg-emeraldState/20 border border-emeraldState/40 hover:bg-emeraldState/30 text-emeraldState font-bold">Accept Remote Payload</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CryptoEngine = {
+      async deriveKey(passphrase, salt) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(passphrase), { name: 'PBKDF2' }, false, ['deriveKey']);
+        return await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: 600000, hash: 'SHA-256' },
+          keyMaterial,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      },
+      async encrypt(plaintext, key) {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const enc = new TextEncoder();
+        const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
+        return {
+          ciphertext: Array.from(new Uint8Array(ciphertext)),
+          iv: Array.from(iv)
+        };
+      },
+      async decrypt(encryptedObj, key) {
+        const dec = new TextDecoder();
+        const decrypted = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: new Uint8Array(encryptedObj.iv) },
+          key,
+          new Uint8Array(encryptedObj.ciphertext)
+        );
+        return dec.decode(decrypted);
+      }
+    };
+
+    const StorageEngine = {
+      db: null,
+      async init() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open('adenine_secure_vault', 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('store')) db.createObjectStore('store', { keyPath: 'id' });
+            if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'key' });
+          };
+          req.onsuccess = (e) => {
+            this.db = e.target.result;
+            resolve(this.db);
+          };
+          req.onerror = () => reject(req.error);
+        });
+      },
+      async setMeta(key, value) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction('meta', 'readwrite');
+          tx.objectStore('meta').put({ key, value });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      },
+      async getMeta(key) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction('meta', 'readonly');
+          const req = tx.objectStore('meta').get(key);
+          req.onsuccess = () => resolve(req.result ? req.result.value : null);
+          req.onerror = () => reject(tx.error);
+        });
+      },
+      async save(item) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction('store', 'readwrite');
+          tx.objectStore('store').put(item);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      },
+      async getAll(type) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction('store', 'readonly');
+          const req = tx.objectStore('store').getAll();
+          req.onsuccess = () => {
+            const results = req.result.filter(i => i.type === type);
+            resolve(results);
+          };
+          req.onerror = () => reject(tx.error);
+        });
+      },
+      async delete(id) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction('store', 'readwrite');
+          tx.objectStore('store').delete(id);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      }
+    };
+
+    let sessionKey = null;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await StorageEngine.init();
+      
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('border-violetAccent', 'text-white');
+            b.classList.add('border-surfaceAlt', 'text-slate-400');
+          });
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          btn.classList.add('border-violetAccent', 'text-white');
+          btn.classList.remove('border-surfaceAlt', 'text-slate-400');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+        });
+      });
+
+      document.getElementById('vault-auth-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pass = document.getElementById('master-passphrase').value;
+        const status = document.getElementById('auth-status');
+        status.textContent = 'Deriving encryption keys...';
+
+        try {
+          let salt = await StorageEngine.getMeta('vault_salt');
+          if (!salt) {
+            salt = Array.from(crypto.getRandomValues(new Uint8Array(16)));
+            await StorageEngine.setMeta('vault_salt', salt);
+          }
+          sessionKey = await CryptoEngine.deriveKey(pass, new Uint8Array(salt));
+          
+          document.getElementById('unlock-modal').classList.add('hidden');
+          document.getElementById('app-container').classList.remove('hidden');
+          document.getElementById('master-passphrase').value = '';
+          status.textContent = '';
+          await refreshAllData();
+        } catch (err) {
+          status.textContent = 'Key derivation failure: ' + err.message;
+        }
+      });
+
+      document.getElementById('lock-btn').addEventListener('click', () => {
+        sessionKey = null;
+        document.getElementById('app-container').classList.add('hidden');
+        document.getElementById('unlock-modal').classList.remove('hidden');
+      });
+
+      document.getElementById('gen-pass-btn').addEventListener('click', () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+';
+        const arr = crypto.getRandomValues(new Uint32Array(20));
+        const pass = Array.from(arr).map(n => chars[n % chars.length]).join('');
+        document.getElementById('cred-password').value = pass;
+      });
+
+      document.getElementById('vault-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('cred-title').value;
+        const user = document.getElementById('cred-username').value;
+        const pass = document.getElementById('cred-password').value;
+        const payload = JSON.stringify({ user, pass });
+        const enc = await CryptoEngine.encrypt(payload, sessionKey);
+        await StorageEngine.save({ id: crypto.randomUUID(), type: 'vault', title, data: enc });
+        e.target.reset();
+        await renderVault();
+      });
+
+      document.getElementById('notes-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('note-title').value;
+        const body = document.getElementById('note-body').value;
+        const enc = await CryptoEngine.encrypt(body, sessionKey);
+        await StorageEngine.save({ id: crypto.randomUUID(), type: 'note', title, data: enc });
+        e.target.reset();
+        await renderNotes();
+      });
+
+      document.getElementById('cal-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('event-title').value;
+        const date = document.getElementById('event-date').value;
+        const time = document.getElementById('event-time').value;
+        const payload = JSON.stringify({ time });
+        const enc = await CryptoEngine.encrypt(payload, sessionKey);
+        await StorageEngine.save({ id: crypto.randomUUID(), type: 'calendar', title, date, data: enc });
+        e.target.reset();
+        await renderCalendar();
+      });
+
+      document.getElementById('task-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = document.getElementById('task-text').value;
+        const enc = await CryptoEngine.encrypt(text, sessionKey);
+        await StorageEngine.save({ id: crypto.randomUUID(), type: 'task', done: false, data: enc });
+        e.target.reset();
+        await renderTasks();
+      });
+
+      const syncModal = document.getElementById('sync-modal');
+      let pc = null;
+      let dc = null;
+
+      document.getElementById('p2p-sync-btn').addEventListener('click', () => syncModal.classList.remove('hidden'));
+      document.getElementById('close-sync-btn').addEventListener('click', () => syncModal.classList.add('hidden'));
+
+      document.getElementById('p2p-offer-btn').addEventListener('click', async () => {
+        pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        dc = pc.createDataChannel('sync-vault');
+        
+        dc.onopen = async () => {
+          const allItems = await new Promise((resolve) => {
+            const tx = StorageEngine.db.transaction('store', 'readonly');
+            const req = tx.objectStore('store').getAll();
+            req.onsuccess = () => resolve(req.result);
+          });
+          dc.send(JSON.stringify(allItems));
+        };
+
+        pc.onicecandidate = (e) => {
+          if (!e.candidate) {
+            document.getElementById('p2p-sdp-out').value = JSON.stringify(pc.localDescription);
+          }
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+      });
+
+      document.getElementById('p2p-connect-btn').addEventListener('click', async () => {
+        const inDesc = JSON.parse(document.getElementById('p2p-sdp-in').value);
+        if (!pc) {
+          pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+          pc.ondatachannel = (e) => {
+            dc = e.channel;
+            dc.onmessage = async (evt) => {
+              const incoming = JSON.parse(evt.data);
+              for (const item of incoming) {
+                await StorageEngine.save(item);
+              }
+              await refreshAllData();
+              syncModal.classList.add('hidden');
+            };
+          };
+          pc.onicecandidate = (e) => {
+            if (!e.candidate) {
+              document.getElementById('p2p-sdp-out').value = JSON.stringify(pc.localDescription);
+            }
+          };
+          await pc.setRemoteDescription(new RTCSessionDescription(inDesc));
+          const ans = await pc.createAnswer();
+          await pc.setLocalDescription(ans);
+        } else {
+          await pc.setRemoteDescription(new RTCSessionDescription(inDesc));
+        }
+      });
+    });
+
+    async function refreshAllData() {
+      await renderVault();
+      await renderNotes();
+      await renderCalendar();
+      await renderTasks();
+    }
+
+    async function renderVault() {
+      const list = document.getElementById('vault-list');
+      list.innerHTML = '';
+      const items = await StorageEngine.getAll('vault');
+      for (const item of items) {
+        try {
+          const decrypted = JSON.parse(await CryptoEngine.decrypt(item.data, sessionKey));
+          const row = document.createElement('div');
+          row.className = 'p-3 rounded bg-void border border-surfaceAlt flex items-center justify-between';
+          row.innerHTML = `
+            <div>
+              <div class="font-bold text-white">${escapeHtml(item.title)}</div>
+              <div class="text-slate-400 text-[11px]">${escapeHtml(decrypted.user)}</div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="navigator.clipboard.writeText('${escapeHtml(decrypted.pass)}')" class="px-2 py-1 rounded bg-surfaceAlt hover:bg-violetAccent text-white text-[10px]">Copy</button>
+              <button onclick="deleteItem('${item.id}', 'vault')" class="px-2 py-1 rounded bg-crimsonState/10 hover:bg-crimsonState/20 text-crimsonState text-[10px]">Del</button>
+            </div>
+          `;
+          list.appendChild(row);
+        } catch (e) {}
+      }
+    }
+
+    async function renderNotes() {
+      const list = document.getElementById('notes-list');
+      list.innerHTML = '';
+      const items = await StorageEngine.getAll('note');
+      for (const item of items) {
+        try {
+          const decrypted = await CryptoEngine.decrypt(item.data, sessionKey);
+          const card = document.createElement('div');
+          card.className = 'p-4 rounded bg-void border border-surfaceAlt';
+          card.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+              <div class="font-bold text-white">${escapeHtml(item.title)}</div>
+              <button onclick="deleteItem('${item.id}', 'notes')" class="text-crimsonState text-[10px]">Delete</button>
+            </div>
+            <div class="text-slate-400 whitespace-pre-wrap text-[11px]">${escapeHtml(decrypted)}</div>
+          `;
+          list.appendChild(card);
+        } catch (e) {}
+      }
+    }
+
+    async function renderCalendar() {
+      const list = document.getElementById('cal-list');
+      list.innerHTML = '';
+      const items = await StorageEngine.getAll('calendar');
+      for (const item of items) {
+        try {
+          const decrypted = JSON.parse(await CryptoEngine.decrypt(item.data, sessionKey));
+          const row = document.createElement('div');
+          row.className = 'p-3 rounded bg-void border border-surfaceAlt flex items-center justify-between';
+          row.innerHTML = `
+            <div>
+              <div class="font-bold text-white">${escapeHtml(item.title)}</div>
+              <div class="text-slate-500 text-[11px]">${escapeHtml(item.date)} at ${escapeHtml(decrypted.time)}</div>
+            </div>
+            <button onclick="deleteItem('${item.id}', 'calendar')" class="text-crimsonState text-[10px]">Delete</button>
+          `;
+          list.appendChild(row);
+        } catch (e) {}
+      }
+    }
+
+    async function renderTasks() {
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+      const items = await StorageEngine.getAll('task');
+      for (const item of items) {
+        try {
+          const decrypted = await CryptoEngine.decrypt(item.data, sessionKey);
+          const row = document.createElement('div');
+          row.className = 'p-3 rounded bg-void border border-surfaceAlt flex items-center justify-between';
+          row.innerHTML = `
+            <span class="text-white text-xs">${escapeHtml(decrypted)}</span>
+            <button onclick="deleteItem('${item.id}', 'tasks')" class="text-crimsonState text-[10px]">Done</button>
+          `;
+          list.appendChild(row);
+        } catch (e) {}
+      }
+    }
+
+    async function deleteItem(id, tab) {
+      await StorageEngine.delete(id);
+      if (tab === 'vault') await renderVault();
+      if (tab === 'notes') await renderNotes();
+      if (tab === 'calendar') await renderCalendar();
+      if (tab === 'tasks') await renderTasks();
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    }
+  </script>
+</body>
+</html>
